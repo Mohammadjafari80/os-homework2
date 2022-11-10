@@ -51,7 +51,11 @@ int main(int args, char *argv[]) {
 		}
 		write(f_reverse, B, counter+1);
 		write(1, "writed reverse!\n", 16);
-		close(f_reverse);
+		int c_reverse = close(f_reverse);
+		if (c_reverse < 0){
+			write(1, "closing file failed!\n", 21);
+			return -1;
+		}
 		write(1, "child process ended!\n", 21);
 	} else if (child_pid > 0){
 		int status;
@@ -63,9 +67,17 @@ int main(int args, char *argv[]) {
 		} else if (waited_pid == child_pid) {
 			write(1, "parent process started!\n", 24); 
 			int f_normal = open("file_to_write.txt", O_APPEND | O_WRONLY, 0642);
+			if (f_normal < 0){
+				write(1, "opening file failed!\n", 21);
+				return -1;
+			}
 			write(f_normal, A, counter+1);
 			write(1, "writed normal!\n", 15);
-			close(f_normal);
+			int c_normal = close(f_normal);
+			if (c_normal < 0){
+				write(1, "closing file failed!\n", 21);
+				return -1;
+			}
 			write(1, "parent process ended!\n", 22);
 		}
 	}
